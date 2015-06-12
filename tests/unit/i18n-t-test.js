@@ -67,3 +67,16 @@ test("applies provided default translation in cascade when main one is not found
   assert.equal(i18n.t('not.yet.translated', { clicks: 8, default: ['not.translated.either'] }), 'Missing translation: not.yet.translated');
   assert.equal(calls[0][1], 'not.yet.translated', 'When the "missing" event is fired, it\'s fired with the provided key');
 });
+
+test("applies provided scope to both the main key and the defaults when provided", function(assert) {
+  const i18n = this.subject({ locale: 'en' });
+  const defaultsChain = ['pretty-good-interpolations', 'interpolations'];
+
+  const strScope = 'with';
+  assert.equal(i18n.t('great-interpolations', { clicks: 8, default: defaultsChain, scope: strScope }), 'Clicks: 8');
+  assert.equal(i18n.t('great-interpolations', { clicks: 8, default: 'interpolations', scope: strScope }), 'Clicks: 8');
+
+  const arrayScope = ['with', 'deep'];
+  assert.equal(i18n.t('great-interpolations', { clicks: 8, default: defaultsChain, scope: arrayScope }), 'Deep clicks: 8');
+  assert.equal(i18n.t('great-interpolations', { clicks: 8, default: 'interpolations', scope: arrayScope }), 'Deep clicks: 8');
+});

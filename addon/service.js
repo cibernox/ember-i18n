@@ -26,11 +26,18 @@ export default Parent.extend(Ember.Evented, {
     const locale = this.get('_locale');
     Ember.assert("I18n: Cannot translate when locale is null", locale);
     const count = get(data, 'count');
-
     const defaults = makeArray(get(data, 'default'));
 
     defaults.unshift(key);
-    const template = locale.getCompiledTemplate(defaults, count);
+
+    if (scope) {
+      if (isArray(scope)) {
+        scope = scope.join('.');
+      }
+      defaults = defaults.map(k => `${scope}.${k}`);
+    }
+
+    let template = locale.getCompiledTemplate(defaults, count);
 
     if (template._isMissing) {
       this.trigger('missing', this.get('locale'), key, data);
